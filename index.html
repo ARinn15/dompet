@@ -26,6 +26,8 @@
             height: 100px;
             display: flex;
         }
+
+       
         .header1{
             position: fixed;
             display: flex;
@@ -38,18 +40,6 @@
         }
         body.dark-mode .header1{
             background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .navbar{
-            bottom: 0;
-            background-color: #476EAE;
-            width: 100%;
-            height: 50px;
-            color: white;
-            display: flex;
-            text-align: center;
-            align-items: center;
-            justify-content: center;
         }
         .merk {
              font-size: 2.0rem;
@@ -84,9 +74,11 @@
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
+
         .theme-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
+            color: gray;
         }
 
         /* Dark mode styles */
@@ -219,6 +211,9 @@
         body.dark-mode .category-name {
             color: #e2e8f0;
         }
+        body.dark-mode .user-info{
+            color: white;
+        }
 
         .category-amount {
             font-weight: bold;
@@ -268,7 +263,6 @@
             background: linear-gradient(135deg, #EF7722, #EF7722);
             color: white;
         }
-
 
         .card h3 {
             margin: 0 0 10px 0;
@@ -330,7 +324,7 @@
         }
 
         .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
+            width: 420px;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
@@ -342,10 +336,13 @@
             outline: none;
             border-color: #667eea;
         }
+        body.dark-mode .btn{
+            color: white;
+        }
 
         .btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
+            background: linear-gradient(135deg, #0BA6DF, #0BA6DF);
+            color: black;
             border: none;
             padding: 12px 25px;
             border-radius: 8px;
@@ -498,6 +495,118 @@
             color: #333;
         }
 
+        /* Login Screen Styles */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+
+        body.dark-mode .login-container {
+            background: #2d3748;
+            color: white;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #0BA6DF;
+            margin: 0 0 10px 0;
+            font-size: 2.2rem;
+        }
+        .ar-logo{
+            width: 50px;
+            height: 50px;
+        }
+
+        body.dark-mode .login-header h1 {
+            color: #667eea;
+        }
+
+        .login-header p {
+            color: #666;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        body.dark-mode .login-header p {
+            color: #a0aec0;
+        }
+
+        .login-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        body.dark-mode .login-tabs {
+            background: #4a5568;
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        body.dark-mode .login-tab {
+            color: #a0aec0;
+        }
+
+        .login-tab.active {
+            background: linear-gradient(135deg, #0BA6DF, #0BA6DF);
+            color: white;
+        }
+
+        .login-form {
+            display: none;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            color: black;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -524,24 +633,104 @@
             .transaction-actions {
                 margin-left: 0;
             }
+
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .user-info {
+                position: static;
+                margin-bottom: 20px;
+                justify-content: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    
-            <div class="theme-toggle">
-                <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">
-                    <span id="themeIcon">🌙</span>
-                    <span id="themeText">Mode Gelap</span>
-                </button>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <img class="ar-logo" src="img/ar-icon3.png">
+                <h1>Dompet ARin</h1>
+                <p>Masuk atau daftar untuk mengelola keuangan Anda</p>
             </div>
+            
+            <div class="login-form-container">
+                <div class="login-tabs">
+                    <button class="login-tab active" onclick="showLoginTab('login')">Masuk</button>
+                    <button class="login-tab" onclick="showLoginTab('register')">Daftar</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="loginForm" class="login-form active">
+                    <form id="loginFormElement">
+                        <div class="form-group">
+                            <label for="loginUsername">Username</label>
+                            <input type="text" id="loginUsername" required placeholder="Masukkan username">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required placeholder="Masukkan password">
+                        </div>
+                        <button type="submit" class="btn login-btn">Masuk</button>
+                    </form>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="registerForm" class="login-form">
+                    <form id="registerFormElement">
+                        <div class="form-group">
+                            <label for="registerName">Nama Lengkap</label>
+                            <input type="text" id="registerName" required placeholder="Masukkan nama lengkap">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerUsername">Username</label>
+                            <input type="text" id="registerUsername" required placeholder="Pilih username">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" required placeholder="Buat password">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerConfirmPassword">Konfirmasi Password</label>
+                            <input type="password" id="registerConfirmPassword" required placeholder="Ulangi password">
+                        </div>
+                        <button type="submit" class="btn login-btn">Daftar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="container">
+    <!-- Theme Toggle (Always Visible) -->
+    <div class="theme-toggle">
+        <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">
+            <span id="themeIcon">🌙</span>
+            <span id="themeText">Mode Gelap</span>
+        </button>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="container" style="display: none;">
         <div class="header1">
-            <img class="icon-ar" src="ar-icon3.png">
+            <img class="icon-ar" src="img/ar-icon3.png">
             <h1 class="merk">Dompet ARin</h1>
         </div>
 
+        <div class="header">
+            <div class="user-info">
+                <span id="welcomeMessage">Selamat datang!</span>
+                <button class="btn btn-small" onclick="logout()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(0,0,0,0.3); margin-left: 15px;">
+                    🚪 Keluar
+                </button>
+            </div>
+        </div>
+        
         <!-- Dashboard -->
         <div class="dashboard">
             <div class="card balance-card">
@@ -746,30 +935,165 @@
             </form>
         </div>
     </div>
-    <div class="navbar">
-        copyright &copy; 2025 by aldi maulana
-    </div>  
 
     <script>
         // Data storage
-        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let currentUser = null;
+        let transactions = [];
         let editingId = null;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('reportDate').valueAsDate = new Date();
-            updateDashboard();
-            displayTransactions();
-            generateReport();
-            
             // Load saved theme
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
                 updateThemeButton();
             }
+
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            } else {
+                showLoginScreen();
+            }
         });
+
+        // Show login screen
+        function showLoginScreen() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        // Show main app
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            // Load user's transactions
+            loadUserTransactions();
+            
+            // Set welcome message
+            document.getElementById('welcomeMessage').textContent = `Selamat datang, ${currentUser.name}!`;
+            
+            // Initialize dates and displays
+            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('reportDate').valueAsDate = new Date();
+            updateDashboard();
+            displayTransactions();
+            generateReport();
+        }
+
+        // Load user's transactions
+        function loadUserTransactions() {
+            const userTransactionsKey = `transactions_${currentUser.username}`;
+            transactions = JSON.parse(localStorage.getItem(userTransactionsKey)) || [];
+        }
+
+        // Save user's transactions
+        function saveUserTransactions() {
+            const userTransactionsKey = `transactions_${currentUser.username}`;
+            localStorage.setItem(userTransactionsKey, JSON.stringify(transactions));
+        }
+
+        // Login tab switching
+        function showLoginTab(tabName) {
+            // Hide all forms
+            document.querySelectorAll('.login-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.querySelectorAll('.login-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected form
+            document.getElementById(tabName + 'Form').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Handle login
+        document.getElementById('loginFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Find user
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showMainApp();
+                
+                // Clear form
+                this.reset();
+            } else {
+                alert('Username atau password salah!');
+            }
+        });
+
+        // Handle registration
+        document.getElementById('registerFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                alert('Password dan konfirmasi password tidak sama!');
+                return;
+            }
+            
+            if (password.length < 4) {
+                alert('Password minimal 4 karakter!');
+                return;
+            }
+            
+            // Check if username already exists
+            if (users.find(u => u.username === username)) {
+                alert('Username sudah digunakan! Pilih username lain.');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                username: username,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('Akun berhasil dibuat! Silakan masuk dengan akun baru Anda.');
+            
+            // Clear form and switch to login
+            this.reset();
+            showLoginTab('login');
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Yakin ingin keluar?')) {
+                currentUser = null;
+                transactions = [];
+                localStorage.removeItem('currentUser');
+                showLoginScreen();
+                
+                // Clear login forms
+                document.getElementById('loginFormElement').reset();
+                document.getElementById('registerFormElement').reset();
+            }
+        }
 
         // Toggle theme function
         function toggleTheme() {
@@ -834,7 +1158,7 @@
             };
 
             transactions.push(transaction);
-            localStorage.setItem('transactions', JSON.stringify(transactions));
+            saveUserTransactions();
             
             // Reset form
             this.reset();
@@ -902,7 +1226,7 @@
         function deleteTransaction(id) {
             if (confirm('Yakin ingin menghapus transaksi ini?')) {
                 transactions = transactions.filter(t => t.id !== id);
-                localStorage.setItem('transactions', JSON.stringify(transactions));
+                saveUserTransactions();
                 updateDashboard();
                 displayTransactions();
                 generateReport();
@@ -922,7 +1246,7 @@
                 // Double confirmation for safety
                 if (confirm('Konfirmasi sekali lagi: Hapus SEMUA data transaksi?')) {
                     transactions = [];
-                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    saveUserTransactions();
                     updateDashboard();
                     displayTransactions();
                     generateReport();
@@ -971,7 +1295,7 @@
                 date: document.getElementById('editDate').value
             };
             
-            localStorage.setItem('transactions', JSON.stringify(transactions));
+            saveUserTransactions();
             
             updateDashboard();
             displayTransactions();
@@ -1269,6 +1593,5 @@
             }
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98b97a86714cff83',t:'MTc1OTk2Njc3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98bd99afa1a2ff83',t:'MTc2MDAwOTk5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
