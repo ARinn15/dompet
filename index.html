@@ -16,10 +16,10 @@
 
         .container {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 190px;
-            margin-top: 100px;
+            margin: 100px auto 0;
+            padding: 20px;
         }
+
         .icon-ar{
             position: absolute;
             width: 100px;
@@ -51,6 +51,9 @@
             text-align: center;
             align-items: center;
             justify-content: center;
+        }
+        body.dark-mode .navbar{
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
         .merk {
              font-size: 2.0rem;
@@ -336,7 +339,8 @@
         }
 
         .form-group input, .form-group select, .form-group textarea {
-            width: 420px;
+            width: 100%;
+            max-width: 420px;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
@@ -610,11 +614,12 @@
         }
 
         .user-info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
             display: flex;
-            align-items: center;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: center;
+            width: 100%;
+            margin-top: 20px;
             color: black;
             font-weight: 600;
         }
@@ -660,6 +665,122 @@
                 font-size: 2rem;
             }
         }
+        /* Tablet (max 992px) */
+@media (max-width: 992px) {
+    .merk {
+        font-size: 1.5rem;
+        left: 80px;
+        top: 30px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+    }
+
+    .dashboard {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+/* HP ukuran sedang (max 600px) */
+@media (max-width: 600px) {
+    .header1 {
+        height: 80px;
+    }
+
+    .icon-ar {
+        width: 60px;
+        height: 60px;
+    }
+
+    .merk {
+        font-size: 1.3rem;
+        left: 75px;
+        top: 20px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .tab {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .tab-content {
+        padding: 15px;
+    }
+}
+
+/* Layar kecil banget (max 400px) */
+@media (max-width: 400px) {
+    .merk {
+        font-size: 1rem;
+        left: 70px;
+    }
+
+    .login-container {
+        padding: 20px;
+    }
+
+    .login-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+    }
+}
+.pw-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pw-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* ruang untuk tombol */
+  box-sizing: border-box;
+}
+
+.pw-toggle {
+  position: absolute;
+  right: 1px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.pw-toggle svg {
+  width: 20px;
+  height: 20px;
+  stroke: #777;
+  transition: stroke 0.2s ease;
+}
+
+.pw-toggle:hover svg {
+  stroke: #333;
+}
+.pw-toggle svg { color: var(--text-color); }
+
+
     </style>
 </head>
 <body>
@@ -685,13 +806,21 @@
                             <label for="loginUsername">Username</label>
                             <input type="text" id="loginUsername" required placeholder="Masukkan username">
                         </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Password</label>
-                            <input type="password" id="loginPassword" required placeholder="Masukkan password">
-                        </div>
-                        <button type="submit" class="btn login-btn">Masuk</button>
-                    </form>
-                </div>
+                        <div class="form-group pw-container">
+                             <label for="loginPassword">Password</label>
+                            <div class="pw-wrapper">
+                            <input type="password" id="loginPassword" placeholder="Masukkan password" required>
+                            <button type="button" class="pw-toggle" aria-label="Tampilkan password">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                              <circle cx="12" cy="12" r="3"/>
+                              </svg>
+                             </button>
+                             </div>
+                              <button type="submit" class="btn login-btn">Masuk</button>
+                    </div>
+                </form>
+            </div>
                 
                 <!-- Register Form -->
                 <div id="registerForm" class="login-form">
@@ -706,11 +835,27 @@
                         </div>
                         <div class="form-group">
                             <label for="registerPassword">Password</label>
+                            <div class="pw-wrapper">
                             <input type="password" id="registerPassword" required placeholder="Buat password">
+                             <button type="button" class="pw-toggle" aria-label="Tampilkan password">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                              <circle cx="12" cy="12" r="3"/>
+                              </svg>
+                             </button>
+                             </div>
                         </div>
                         <div class="form-group">
                             <label for="registerConfirmPassword">Konfirmasi Password</label>
+                            <div class="pw-wrapper">
                             <input type="password" id="registerConfirmPassword" required placeholder="Ulangi password">
+                            <button type="button" class="pw-toggle" aria-label="Tampilkan password">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                              <circle cx="12" cy="12" r="3"/>
+                              </svg>
+                             </button>
+                             </div>
                         </div>
                         <button type="submit" class="btn login-btn">Daftar</button>
                     </form>
@@ -1607,5 +1752,26 @@
             }
         }
     </script>
+    <script>
+document.querySelectorAll('.pw-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = btn.closest('.pw-wrapper').querySelector('input');
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+
+    // Ganti ikon SVG sesuai status
+    btn.innerHTML = isHidden
+      ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currenColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17.94 17.94A10.09 10.09 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-6.06M9.9 4.24A9.97 9.97 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-5.06 6.06M1 1l22 22"/>
+        </svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#555" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>`;
+  });
+});
+</script>
+
+
 </body>
 </html>
