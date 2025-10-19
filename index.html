@@ -47,10 +47,11 @@
             width: 100%;
             height: 50px;
             color: white;
-            display: flex;
             text-align: center;
-            align-items: center;
-            justify-content: center;
+            padding: 20px 10px;
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+             margin-top: 40px;
         }
         body.dark-mode .navbar{
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -779,8 +780,75 @@
   stroke: #333;
 }
 .pw-toggle svg { color: var(--text-color); }
+.footer-links {
+    margin-top: 8px;
+  }
 
+  .footer-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 8px;
+    transition: color 0.3s ease;
+  }
 
+  .footer-links a:hover {
+    color: #1b5e20;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 600px) {
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+ .mini-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: white;
+    padding: 5px;
+    margin-top: 40px;
+    padding-bottom: 15px;
+    opacity: 0.9;
+    background: #476EAE;
+    height: 50px;
+  }
+
+  .mini-footer .mini-links {
+    margin-top: 4px;
+  }
+
+  .mini-footer a {
+    color:white;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+
+  .mini-footer a:hover {
+    opacity: 0.7;
+  }
+
+  /* Jika background halaman terang */
+  .light-theme .mini-footer {
+    color: black;
+  }
+
+  .light-theme .mini-footer a {
+    color: black;
+  }
+
+  .light-theme .mini-footer a:hover {
+    color: #1b5e20;
+  }
+  body.dark-mode .mini-footer {
+    color: white;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+  }
+  body.dark-mode .mini-footer a{
+    color: white;
+  }
     </style>
 </head>
 <body>
@@ -1092,9 +1160,17 @@
             </form>
         </div>
     </div>
-<div class="navbar">
-        copyright &copy; 2025 by aldi maulana
-    </div>  
+<!-- ===== MINI FOOTER DOMPETARIN ===== -->
+<footer class="mini-footer">
+  <p>© 2025 <strong>AMau</strong></p>
+  <div class="mini-links">
+    <a href="about.html">Tentang</a> · 
+    <a href="privacy-policy.html">Privasi</a> · 
+    <a href="terms-&-conditions.html">Syarat</a>
+  </div>
+</footer>
+<!-- ===== END MINI FOOTER ===== -->
+  
     <script>
         // Data storage
         let users = JSON.parse(localStorage.getItem('users')) || [];
