@@ -1725,9 +1725,6 @@ if (typeof Android !== "undefined" && Android.saveFileToDownloads) {
     document.body.removeChild(link);
 }
 
-
-
-
         // Export Report to Excel
         function exportReportToExcel() {
     const period = document.getElementById('reportPeriod').value;
@@ -1792,7 +1789,7 @@ if (typeof Android !== "undefined" && Android.saveFileToDownloads) {
         ]);
     });
 
-   // Create and download file
+  // Create and download file
 const fileName = `Catatan_Keuangan_${new Date().toISOString().split('T')[0]}.csv`;
 const csvContent = data.map(row =>
     row.map(cell => `"${cell}"`).join(',')
@@ -1814,9 +1811,6 @@ if (typeof Android !== "undefined" && Android.saveFileToDownloads) {
     link.click();
     document.body.removeChild(link);
 }
-
-
-
 
         // Close modal when clicking outside
         window.onclick = function(event) {
