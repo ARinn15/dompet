@@ -1687,11 +1687,10 @@
         return;
     }
 
-    const data = [
-        ['Tanggal', 'Jenis', 'Kategori', 'Deskripsi', 'Jumlah']
-    ];
+    const data = [['Tanggal', 'Jenis', 'Kategori', 'Deskripsi', 'Jumlah']];
 
     const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
     sortedTransactions.forEach(transaction => {
         data.push([
             new Date(transaction.date).toLocaleDateString('id-ID'),
@@ -1703,29 +1702,27 @@
     });
 
     const csvContent = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
     const fileName = `Catatan_Keuangan_${new Date().toISOString().split('T')[0]}.csv`;
 
-    // Deteksi apakah sedang di Android
-    const isAndroid = /android/i.test(navigator.userAgent);
-
-    if (isAndroid) {
-        const newTab = window.open(url, '_blank');
-        if (!newTab) {
-            alert('⚠️ Pop-up diblokir. Aktifkan pop-up untuk membuka file CSV.');
-        } else {
-            alert('✅ File CSV dibuka di tab baru. Silakan tekan menu titik tiga → "Download" atau "Simpan sebagai".');
+    // 🔍 Deteksi apakah dijalankan lewat aplikasi (Android)
+    if (window.Android && typeof window.Android.saveFileToDownloads === 'function') {
+        try {
+            window.Android.saveFileToDownloads(fileName, csvContent);
+            alert('📱 File akan disimpan melalui aplikasi Android.');
+        } catch (err) {
+            console.error('Gagal memanggil Android interface:', err);
+            alert('⚠️ Gagal menyimpan via aplikasi.');
         }
     } else {
+        // 💻 Kalau di browser biasa
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
-        link.href = url;
+        link.href = URL.createObjectURL(blob);
         link.download = fileName;
-        document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
     }
 }
+
 
 
 
@@ -1738,37 +1735,42 @@
     let periodName = '';
 
     if (period === 'daily') {
-        filteredTransactions = transactions.filter(t => new Date(t.date).toDateString() === selectedDate.toDateString());
-        periodName = `Harian_${selectedDate.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
-    } else if (period === 'weekly') {
-        const startOfWeek = new Date(selectedDate);
-        startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
         filteredTransactions = transactions.filter(t => {
             const d = new Date(t.date);
-            return d >= startOfWeek && d <= endOfWeek;
+            return d.toDateString() === selectedDate.toDateString();
         });
-        periodName = `Mingguan_${startOfWeek.toLocaleDateString('id-ID').replace(/\//g, '-')}_sampai_${endOfWeek.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
+        periodName = `Harian_${selectedDate.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
+    } else if (period === 'weekly') {
+        const start = new Date(selectedDate);
+        start.setDate(selectedDate.getDate() - selectedDate.getDay());
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        filteredTransactions = transactions.filter(t => {
+            const d = new Date(t.date);
+            return d >= start && d <= end;
+        });
+        periodName = `Mingguan_${start.toLocaleDateString('id-ID')}_sampai_${end.toLocaleDateString('id-ID')}`;
     } else if (period === 'monthly') {
         filteredTransactions = transactions.filter(t => {
             const d = new Date(t.date);
             return d.getMonth() === selectedDate.getMonth() && d.getFullYear() === selectedDate.getFullYear();
         });
-        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        periodName = `Bulanan_${monthNames[selectedDate.getMonth()]}_${selectedDate.getFullYear()}`;
+        const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        periodName = `Bulanan_${bulan[selectedDate.getMonth()]}_${selectedDate.getFullYear()}`;
     }
 
     if (filteredTransactions.length === 0) {
-        alert('Tidak ada data transaksi untuk periode yang dipilih!');
+        alert('Tidak ada data transaksi untuk periode ini!');
         return;
     }
 
     let totalIncome = 0, totalExpense = 0;
-    filteredTransactions.forEach(t => t.type === 'income' ? totalIncome += t.amount : totalExpense += t.amount);
-    const balance = totalIncome - totalExpense;
+    filteredTransactions.forEach(t => {
+        if (t.type === 'income') totalIncome += t.amount;
+        else totalExpense += t.amount;
+    });
 
+    const balance = totalIncome - totalExpense;
     const data = [
         ['LAPORAN KEUANGAN'],
         [`Periode: ${period}`],
@@ -1794,29 +1796,26 @@
     });
 
     const csvContent = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
     const fileName = `Laporan_Keuangan_${periodName}.csv`;
 
-    const isAndroid = /android/i.test(navigator.userAgent);
-
-    if (isAndroid) {
-        const newTab = window.open(url, '_blank');
-        if (!newTab) {
-            alert('⚠️ Pop-up diblokir. Aktifkan pop-up untuk membuka laporan CSV.');
-        } else {
-            alert('✅ Laporan CSV dibuka di tab baru. Silakan tekan menu titik tiga → "Download" atau "Simpan sebagai".');
+    // 🔍 Deteksi Android WebView
+    if (window.Android && typeof window.Android.saveFileToDownloads === 'function') {
+        try {
+            window.Android.saveFileToDownloads(fileName, csvContent);
+            alert('📱 File akan disimpan melalui aplikasi Android.');
+        } catch (err) {
+            console.error('Gagal memanggil Android interface:', err);
+            alert('⚠️ Gagal menyimpan via aplikasi.');
         }
     } else {
+        // 💻 Browser biasa
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
-        link.href = url;
+        link.href = URL.createObjectURL(blob);
         link.download = fileName;
-        document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
     }
 }
-
 
 
         // Close modal when clicking outside
