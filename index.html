@@ -1682,161 +1682,120 @@
 
         // Export to Excel - All Transactions
         function exportToExcel() {
-            if (transactions.length === 0) {
-                alert('Tidak ada data transaksi untuk diekspor!');
-                return;
-            }
+    if (transactions.length === 0) {
+        alert('Tidak ada data transaksi untuk diekspor!');
+        return;
+    }
 
-            // Prepare data for Excel
-            const data = [
-                ['Tanggal', 'Jenis', 'Kategori', 'Deskripsi', 'Jumlah']
-            ];
+    // Siapkan data CSV
+    const data = [
+        ['Tanggal', 'Jenis', 'Kategori', 'Deskripsi', 'Jumlah']
+    ];
 
-            const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            sortedTransactions.forEach(transaction => {
-                data.push([
-                    new Date(transaction.date).toLocaleDateString('id-ID'),
-                    transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
-                    transaction.category,
-                    transaction.description || '-',
-                    transaction.amount
-                ]);
-            });
+    const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            // Create CSV content
-            const csvContent = data.map(row => 
-                row.map(cell => `"${cell}"`).join(',')
-            ).join('\n');
+    sortedTransactions.forEach(transaction => {
+        data.push([
+            new Date(transaction.date).toLocaleDateString('id-ID'),
+            transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
+            transaction.category,
+            transaction.description || '-',
+            transaction.amount
+        ]);
+    });
 
-            // Create and download file
-            // ✅ Versi kompatibel semua device
-const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-const url = URL.createObjectURL(blob);
+    // Buat file CSV
+    const csvContent = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
 
-if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    // Untuk perangkat mobile: buka file di tab baru
-    window.open(url, '_blank');
-    alert('📂 File CSV sudah dibuat! Jika tidak otomatis terbuka, periksa tab baru atau menu unduhan.');
-} else {
-    // Untuk desktop: tetap otomatis download
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Catatan_Keuangan_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Buka di tab baru agar bisa diunduh manual di Android
+    const newTab = window.open(url, '_blank');
+    if (!newTab) {
+        alert('⚠️ Pop-up diblokir. Aktifkan pop-up untuk membuka file CSV.');
+    } else {
+        alert('✅ File CSV dibuka di tab baru. Silakan tekan menu titik tiga → "Download" atau "Simpan sebagai".');
+    }
 }
 
-        }
 
         // Export Report to Excel
         function exportReportToExcel() {
-            const period = document.getElementById('reportPeriod').value;
-            const selectedDate = new Date(document.getElementById('reportDate').value);
-            
-            let filteredTransactions = [];
-            let periodName = '';
-            
-            if (period === 'daily') {
-                filteredTransactions = transactions.filter(t => {
-                    const transactionDate = new Date(t.date);
-                    return transactionDate.toDateString() === selectedDate.toDateString();
-                });
-                periodName = `Harian_${selectedDate.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
-            } else if (period === 'weekly') {
-                const startOfWeek = new Date(selectedDate);
-                startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
-                const endOfWeek = new Date(startOfWeek);
-                endOfWeek.setDate(startOfWeek.getDate() + 6);
-                
-                filteredTransactions = transactions.filter(t => {
-                    const transactionDate = new Date(t.date);
-                    return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
-                });
-                periodName = `Mingguan_${startOfWeek.toLocaleDateString('id-ID').replace(/\//g, '-')}_sampai_${endOfWeek.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
-            } else if (period === 'monthly') {
-                filteredTransactions = transactions.filter(t => {
-                    const transactionDate = new Date(t.date);
-                    return transactionDate.getMonth() === selectedDate.getMonth() && 
-                           transactionDate.getFullYear() === selectedDate.getFullYear();
-                });
-                const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                                  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-                periodName = `Bulanan_${monthNames[selectedDate.getMonth()]}_${selectedDate.getFullYear()}`;
-            }
+    const period = document.getElementById('reportPeriod').value;
+    const selectedDate = new Date(document.getElementById('reportDate').value);
 
-            if (filteredTransactions.length === 0) {
-                alert('Tidak ada data transaksi untuk periode yang dipilih!');
-                return;
-            }
+    let filteredTransactions = [];
+    let periodName = '';
 
-            // Calculate totals
-            let totalIncome = 0;
-            let totalExpense = 0;
-            
-            filteredTransactions.forEach(t => {
-                if (t.type === 'income') {
-                    totalIncome += t.amount;
-                } else {
-                    totalExpense += t.amount;
-                }
-            });
-            
-            const balance = totalIncome - totalExpense;
+    if (period === 'daily') {
+        filteredTransactions = transactions.filter(t => new Date(t.date).toDateString() === selectedDate.toDateString());
+        periodName = `Harian_${selectedDate.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
+    } else if (period === 'weekly') {
+        const startOfWeek = new Date(selectedDate);
+        startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        filteredTransactions = transactions.filter(t => {
+            const d = new Date(t.date);
+            return d >= startOfWeek && d <= endOfWeek;
+        });
+        periodName = `Mingguan_${startOfWeek.toLocaleDateString('id-ID').replace(/\//g, '-')}_sampai_${endOfWeek.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
+    } else if (period === 'monthly') {
+        filteredTransactions = transactions.filter(t => {
+            const d = new Date(t.date);
+            return d.getMonth() === selectedDate.getMonth() && d.getFullYear() === selectedDate.getFullYear();
+        });
+        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        periodName = `Bulanan_${monthNames[selectedDate.getMonth()]}_${selectedDate.getFullYear()}`;
+    }
 
-            // Prepare data for Excel
-            const data = [
-                ['LAPORAN KEUANGAN'],
-                [`Periode: ${period === 'daily' ? 'Harian' : period === 'weekly' ? 'Mingguan' : 'Bulanan'}`],
-                [`Tanggal: ${selectedDate.toLocaleDateString('id-ID')}`],
-                [''],
-                ['RINGKASAN'],
-                ['Total Pemasukan', totalIncome],
-                ['Total Pengeluaran', totalExpense],
-                ['Selisih', balance],
-                [''],
-                ['DETAIL TRANSAKSI'],
-                ['Tanggal', 'Jenis', 'Kategori', 'Deskripsi', 'Jumlah']
-            ];
+    if (filteredTransactions.length === 0) {
+        alert('Tidak ada data transaksi untuk periode yang dipilih!');
+        return;
+    }
 
-            const sortedTransactions = [...filteredTransactions].sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            sortedTransactions.forEach(transaction => {
-                data.push([
-                    new Date(transaction.date).toLocaleDateString('id-ID'),
-                    transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
-                    transaction.category,
-                    transaction.description || '-',
-                    transaction.amount
-                ]);
-            });
+    let totalIncome = 0, totalExpense = 0;
+    filteredTransactions.forEach(t => t.type === 'income' ? totalIncome += t.amount : totalExpense += t.amount);
+    const balance = totalIncome - totalExpense;
 
-            // Create CSV content
-            const csvContent = data.map(row => 
-                row.map(cell => `"${cell}"`).join(',')
-            ).join('\n');
+    const data = [
+        ['LAPORAN KEUANGAN'],
+        [`Periode: ${period}`],
+        [`Tanggal: ${selectedDate.toLocaleDateString('id-ID')}`],
+        [''],
+        ['RINGKASAN'],
+        ['Total Pemasukan', totalIncome],
+        ['Total Pengeluaran', totalExpense],
+        ['Selisih', balance],
+        [''],
+        ['DETAIL TRANSAKSI'],
+        ['Tanggal', 'Jenis', 'Kategori', 'Deskripsi', 'Jumlah']
+    ];
 
-            // Create and download file
-            // ✅ Versi kompatibel semua device
-const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-const url = URL.createObjectURL(blob);
+    filteredTransactions.forEach(t => {
+        data.push([
+            new Date(t.date).toLocaleDateString('id-ID'),
+            t.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
+            t.category,
+            t.description || '-',
+            t.amount
+        ]);
+    });
 
-if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    // Untuk perangkat mobile: buka file di tab baru
-    window.open(url, '_blank');
-    alert('📂 File CSV sudah dibuat! Jika tidak otomatis terbuka, periksa tab baru atau menu unduhan.');
-} else {
-    // Untuk desktop: tetap otomatis download
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Catatan_Keuangan_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const csvContent = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    // Buka file CSV di tab baru untuk Android
+    const newTab = window.open(url, '_blank');
+    if (!newTab) {
+        alert('⚠️ Pop-up diblokir. Aktifkan pop-up untuk membuka laporan CSV.');
+    } else {
+        alert('✅ Laporan CSV dibuka di tab baru. Silakan tekan menu titik tiga → "Download" atau "Simpan sebagai".');
+    }
 }
 
-        }
 
         // Close modal when clicking outside
         window.onclick = function(event) {
