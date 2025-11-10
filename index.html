@@ -1274,7 +1274,7 @@
                 // Clear form
                 this.reset();
             } else {
-                alert('Username atau password salah!');
+                showMessage('❌ Username atau password salah!','error');
             }
         });
 
@@ -1289,18 +1289,18 @@
             
             // Validation
             if (password !== confirmPassword) {
-                alert('Password dan konfirmasi password tidak sama!');
+                showMessage('Password dan konfirmasi password tidak sama!', 'error');
                 return;
             }
             
             if (password.length < 4) {
-                alert('Password minimal 4 karakter!');
+                showMessage('Password minimal 4 karakter!','error');
                 return;
             }
             
             // Check if username already exists
             if (users.find(u => u.username === username)) {
-                alert('Username sudah digunakan! Pilih username lain.');
+                showMessage('Username sudah digunakan! Pilih username lain.');
                 return;
             }
             
@@ -1316,7 +1316,7 @@
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
             
-            alert('Akun berhasil dibuat! Silakan masuk dengan akun baru Anda.');
+            showMessage('✅Akun berhasil dibuat! Silakan masuk dengan akun baru Anda.','success');
             
             // Clear form and switch to login
             this.reset();
@@ -1325,7 +1325,8 @@
 
         // Logout function
         function logout() {
-            if (confirm('Yakin ingin keluar?')) {
+            showConfirm('Yakin ingin keluar?', (confirmed) => {
+                if (confirmed){
                 currentUser = null;
                 transactions = [];
                 localStorage.removeItem('currentUser');
@@ -1334,9 +1335,10 @@
                 // Clear login forms
                 document.getElementById('loginFormElement').reset();
                 document.getElementById('registerFormElement').reset();
+                showMessage('👋 Anda telah keluar dari akun.', 'success')
             }
+        });
         }
-
         // Toggle theme function
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -1411,7 +1413,7 @@
             displayTransactions();
             generateReport();
             
-            alert('Transaksi berhasil disimpan!');
+            showMessage('✅ Transaksi berhasil disimpan!','success');
         });
 
         // Update dashboard
@@ -1478,7 +1480,7 @@
         // Delete all transactions
         function deleteAllTransactions() {
             if (transactions.length === 0) {
-                alert('Tidak ada transaksi untuk dihapus!');
+                showMessage('❌ Tidak ada transaksi untuk dihapus!','error');
                 return;
             }
             
@@ -1492,7 +1494,7 @@
                     updateDashboard();
                     displayTransactions();
                     generateReport();
-                    alert('Semua transaksi berhasil dihapus!');
+                    showMessage('✅ Semua transaksi berhasil dihapus!','success');
                 }
             }
         }
@@ -1544,7 +1546,7 @@
             generateReport();
             closeEditModal();
             
-            alert('Transaksi berhasil diupdate!');
+            showMessage('✅ Transaksi berhasil diupdate!','success');
         });
 
         // Generate report
@@ -1690,7 +1692,7 @@
         // Export to Excel - All Transactions
        function exportToExcel() {
     if (transactions.length === 0) {
-        alert('Tidak ada data transaksi untuk diekspor!');
+        showMessage('Tidak ada data transaksi untuk diekspor!','error');
         return;
     }
 
@@ -1715,10 +1717,10 @@
     if (window.Android && typeof window.Android.saveFileToDownloads === 'function') {
         try {
             window.Android.saveFileToDownloads(fileName, csvContent);
-            alert('📱 File akan disimpan melalui aplikasi Android.');
+            showMessage('📱 File akan disimpan melalui aplikasi Android.','success');
         } catch (err) {
             console.error('Gagal memanggil Android interface:', err);
-            alert('⚠️ Gagal menyimpan via aplikasi.');
+            showMessage('⚠️ Gagal menyimpan via aplikasi.','error');
         }
     } else {
         // 💻 Kalau di browser biasa
@@ -1767,7 +1769,7 @@
     }
 
     if (filteredTransactions.length === 0) {
-        alert('Tidak ada data transaksi untuk periode ini!');
+        showMessage('Tidak ada data transaksi untuk periode ini!','error');
         return;
     }
 
@@ -1809,10 +1811,10 @@
     if (window.Android && typeof window.Android.saveFileToDownloads === 'function') {
         try {
             window.Android.saveFileToDownloads(fileName, csvContent);
-            alert('📱 File akan disimpan melalui aplikasi Android.');
+            showMessage('📱 File akan disimpan melalui aplikasi Android.','success');
         } catch (err) {
             console.error('Gagal memanggil Android interface:', err);
-            alert('⚠️ Gagal menyimpan via aplikasi.');
+            showMessage('⚠️ Gagal menyimpan via aplikasi.','error');
         }
     } else {
         // 💻 Browser biasa
@@ -1852,10 +1854,80 @@ document.querySelectorAll('.pw-toggle').forEach(btn => {
   });
 });
 </script>
+<script>
+function showMessage(message, type = "success") {
+  // type = "success" atau "error"
+
+  const box = document.createElement("div");
+  box.textContent = message;
+  box.style.position = "fixed";
+  box.style.bottom = "20px";
+  box.style.left = "50%";
+  box.style.transform = "translateX(-50%)";
+  box.style.padding = "12px 20px";
+  box.style.borderRadius = "10px";
+  box.style.fontSize = "16px";
+  box.style.color = "#fff";
+  box.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+  box.style.zIndex = "9999";
+  box.style.background = type === "success" ? "#4CAF50" : "#f44336";
+  box.style.transition = "opacity 0.5s ease";
+
+  document.body.appendChild(box);
+
+  setTimeout(() => {
+    box.style.opacity = "0";
+    setTimeout(() => box.remove(), 500);
+  }, 2000);
+}
+function showConfirm(message, onConfirm) {
+    // buat overlay semi transparan
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.background = "rgba(0,0,0,0.5)";
+    overlay.style.display = "flex";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+    overlay.style.zIndex = "100000";
+
+    //buat kotak konfirmasi
+    const box =  document.createElement("div");
+    box.style.background = "#fff";
+    box.style.padding = "20px";
+    box.style.borderRadius = "12px";
+    box.style.textAlign = "center";
+    box.style.maxWidth = "320px";
+    box.style.width = "80%";
+    box.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
+    box.innerHTML =  `<p style="font-size:16px; margin-bottom: 20px; color:#333;">${message}</p>
+    <div style="display:flex; justify-content:center; gap:12px;">
+      <button id="confirmYes" style="background:#4CAF50; color:#fff; border:none; padding:8px 16px; border-radius:8px;">Ya</button>
+      <button id="confirmNo" style="background:#f44336; color:#fff; border:none; padding:8px 16px; border-radius:8px;">Tidak</button>
+    </div>`;
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    //event tombol
+    box.querySelector("#confirmYes").onclick = () => {
+        document.body.removeChild(overlay);
+        if (onConfirm) onConfirm(true);
+    };
+    box.querySelector("#confirmNo").onclick = () => {
+        document.body.removeChild(overlay);
+        if (onConfirm) onConfirm(false);
+    };
+}
+</script>
 
 
 </body>
 </html>
+
 
 
 
