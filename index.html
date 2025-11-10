@@ -1468,13 +1468,16 @@
 
         // Delete transaction
         function deleteTransaction(id) {
-            if (confirm('Yakin ingin menghapus transaksi ini?')) {
+            showConfirm('Yakin ingin menghapus transaksi ini?', (confirmed) => {
+                if(confirmed){
                 transactions = transactions.filter(t => t.id !== id);
                 saveUserTransactions();
                 updateDashboard();
                 displayTransactions();
                 generateReport();
+                    showMessage('✅ Transaksi Berhasil dihapus', 'succes');
             }
+            });
         }
 
         // Delete all transactions
@@ -1486,9 +1489,8 @@
             
             const confirmMessage = `Yakin ingin menghapus SEMUA ${transactions.length} transaksi?\n\nTindakan ini tidak dapat dibatalkan!`;
             
-            if (confirm(confirmMessage)) {
-                // Double confirmation for safety
-                if (confirm('Konfirmasi sekali lagi: Hapus SEMUA data transaksi?')) {
+                showConfirm(confirmMessage, (confirmed) => {
+                    if(confirmed){
                     transactions = [];
                     saveUserTransactions();
                     updateDashboard();
@@ -1496,7 +1498,7 @@
                     generateReport();
                     showMessage('✅ Semua transaksi berhasil dihapus!','success');
                 }
-            }
+            });
         }
 
         // Edit transaction
@@ -1927,6 +1929,7 @@ function showConfirm(message, onConfirm) {
 
 </body>
 </html>
+
 
 
 
